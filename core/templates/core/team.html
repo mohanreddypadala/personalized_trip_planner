@@ -1,0 +1,183 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Our Amazing Team{% endblock %}
+
+{% block extra_css %}
+<style>
+    .team-section {
+        padding: 80px 0;
+        background-color: var(--light-grey-bg);
+    }
+    .team-member-card {
+        text-align: center;
+        margin-bottom: 40px;
+        background: var(--white);
+        border-radius: 15px;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+        padding: 30px 20px;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Springy transition */
+        height: 100%; /* Ensure cards are same height */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center; /* Center content vertically */
+        animation: fadeInUp 0.8s ease-out; /* Add entry animation */
+    }
+    .team-member-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 45px rgba(0,0,0,0.15);
+    }
+    .team-member-card img {
+        width: 160px; /* Slightly larger image */
+        height: 160px;
+        object-fit: cover;
+        border-radius: 50%; /* Circular images */
+        border: 5px solid var(--primary-blue); /* Distinct border color */
+        margin-bottom: 20px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        transition: transform 0.3s ease;
+    }
+    .team-member-card:hover img {
+        transform: scale(1.05); /* Grow image on hover */
+    }
+    .team-member-card h4 {
+        color: var(--dark-blue-text);
+        margin-bottom: 8px;
+        font-weight: 700; /* Bolder name */
+        font-size: 1.8rem; /* Larger name */
+    }
+    .team-member-card .role {
+        font-weight: 600; /* Bolder role */
+        color: var(--primary-blue);
+        font-size: 1.1rem; /* Larger role */
+        margin-bottom: 15px;
+    }
+    .team-member-card p {
+        color: #6c757d;
+        font-size: 1rem;
+        line-height: 1.6;
+        flex-grow: 1; /* Allows text to push details down if needed */
+    }
+    .team-title {
+        font-size: 3.2rem; /* Consistent large title with other pages */
+        font-weight: 800;
+        margin-bottom: 60px;
+        color: var(--dark-blue-text);
+        position: relative;
+        display: inline-block;
+        animation: fadeInDown 0.8s ease-out; /* Animation for title */
+    }
+    .team-title::after {
+        content: '';
+        position: absolute;
+        bottom: -15px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 120px; /* Wider underline */
+        height: 5px; /* Thicker underline */
+        background: linear-gradient(90deg, var(--primary-blue), var(--accent-yellow)); /* Gradient underline */
+        border-radius: 3px;
+    }
+
+    /* Adjust animations for staggered appearance of team members */
+    .team-member-card:nth-child(1) { animation-delay: 0.1s; }
+    .team-member-card:nth-child(2) { animation-delay: 0.2s; }
+    .team-member-card:nth-child(3) { animation-delay: 0.3s; }
+    .team-member-card:nth-child(4) { animation-delay: 0.4s; }
+    .team-member-card:nth-child(5) { animation-delay: 0.5s; } /* For the 5th member */
+
+    /* CTA at bottom of team page */
+    .team-cta {
+        padding: 50px 0;
+        text-align: center;
+        animation: fadeInUp 1s ease-out;
+    }
+    .team-cta .lead {
+        font-size: 1.4rem;
+        margin-bottom: 30px;
+    }
+
+    @media (max-width: 768px) {
+        .team-title {
+            font-size: 2.5rem;
+        }
+        .team-member-card img {
+            width: 120px;
+            height: 120px;
+        }
+        .team-member-card h4 {
+            font-size: 1.5rem;
+        }
+        .team-member-card .role {
+            font-size: 0.95rem;
+        }
+        .team-member-card p {
+            font-size: 0.9rem;
+        }
+        .team-member-card {
+             margin-bottom: 25px; /* Adjust spacing on mobile */
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="team-section">
+    <div class="container my-5">
+        <h1 class="text-center team-title">Meet Our Talented Team</h1>
+
+        <div class="row justify-content-center g-4"> {# Added g-4 for consistent gap #}
+            <div class="col-md-4 col-sm-6">
+                <div class="team-member-card">
+                    <img src="{% static 'img/team_member_1.jpg' %}" alt="Ramisetti Jyothirmayi">
+                    <h4>Ramisetti Jyothirmayi</h4>
+                    <p class="role">22A81A0648</p> {# Changed to batch number #}
+                    <p>Project Lead & AI Developer</p> {# Actual role description #}
+                </div>
+            </div>
+
+            <div class="col-md-4 col-sm-6">
+                <div class="team-member-card">
+                    <img src="{% static 'img/team_member_2.jpg' %}" alt="Padala Mohan Reddy">
+                    <h4>Padala Mohan Reddy</h4>
+                    <p class="role">22A81A0637</p>
+                    <p>Frontend & UX Designer</p>
+                </div>
+            </div>
+
+            <div class="col-md-4 col-sm-6">
+                <div class="team-member-card">
+                    <img src="{% static 'img/team_member_3.jpg' %}" alt="Mohammed Hafeeza Khan">
+                    <h4>Mohammed Hafeeza Khan</h4>
+                    <p class="role">22A81A0633</p>
+                    <p>Backend & API Integrations Specialist</p>
+                </div>
+            </div>
+
+            <div class="col-md-4 col-sm-6">
+                <div class="team-member-card">
+                    <img src="{% static 'img/team_member_4.jpg' %}" alt="Seepani Veena Sree">
+                    <h4>Seepani Veena Sree</h4>
+                    <p class="role">23A85A0606</p>
+                    <p>Quality Assurance & Content Creator</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4 col-sm-6">
+                <div class="team-member-card">
+                    <img src="{% static 'img/team_member_5.jpg' %}" alt="Moka Alekh">
+                    <h4>Moka Alekh</h4>
+                    <p class="role">21A81A0644</p>
+                    <p>Documentation & Support Specialist</p> {# Placeholder role #}
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-5 team-cta">
+            <p class="lead">We are a dedicated team committed to making your travel planning effortless and exciting!</p>
+            <a href="{% url 'trip_planner_app:plan_trip' %}" class="btn btn-primary btn-lg">Start Planning Your Next Trip</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

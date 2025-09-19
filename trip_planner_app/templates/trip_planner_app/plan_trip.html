@@ -1,0 +1,550 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Plan Your Trip - AI Travel Planner{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<style>
+    /* Modern gradient background for the page */
+    body {
+        background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+        font-family: 'Poppins', sans-serif;
+    }
+
+    /* Header section */
+    .trip-planner-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 3rem 0;
+        border-radius: 12px;
+        margin-bottom: 2.5rem;
+        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .trip-planner-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url('https://images.unsplash.com/photo-1506197603052-3cc9c3a201bd?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=60') center/cover no-repeat;
+        opacity: 0.15;
+    }
+
+    .trip-planner-header h1 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 1rem;
+        position: relative;
+    }
+
+    .trip-planner-header .lead {
+        font-size: 1.25rem;
+        opacity: 0.9;
+        position: relative;
+    }
+
+    /* Form sections */
+    .form-section {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 5px 25px rgba(0, 0, 0, 0.08);
+        padding: 2.5rem;
+        margin-bottom: 2rem;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .form-section:hover {
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    }
+
+    .form-section h3 {
+        color: #2c3e50;
+        border-bottom: 2px solid #f8f9fa;
+        padding-bottom: 1rem;
+        margin-bottom: 2rem;
+        font-weight: 700;
+        font-size: 1.5rem;
+        display: flex;
+        align-items: center;
+    }
+
+    /* Form elements */
+    .form-label {
+        font-weight: 600;
+        color: #4a5568;
+        margin-bottom: 0.75rem;
+        display: flex;
+        align-items: center;
+    }
+
+    .form-control, .form-select {
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 0.75rem 1.25rem;
+        transition: all 0.3s;
+        height: auto;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.25);
+    }
+
+    .input-group-text {
+        background-color: #f8f9fa;
+        border-color: #e2e8f0;
+        color: #4a5568;
+    }
+
+    /* Checkbox/radio groups */
+    .form-check-group {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+
+    .form-check {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 1rem 1.5rem;
+        margin: 0;
+        border: 1px solid #e2e8f0;
+        transition: all 0.3s ease;
+    }
+
+    .form-check:hover {
+        background: #f1f3ff;
+        border-color: #a3bffa;
+    }
+
+    .form-check-input {
+        width: 1.2em;
+        height: 1.2em;
+        margin-top: 0.2em;
+    }
+
+    .form-check-input:checked {
+        background-color: #667eea;
+        border-color: #667eea;
+    }
+
+    .form-check-label {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+    }
+
+    /* Buttons */
+    .btn-generate {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        padding: 1rem 2.5rem;
+        font-weight: 600;
+        font-size: 1.1rem;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        border-radius: 50px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-generate:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+    }
+
+    .btn-generate::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        z-index: -1;
+    }
+
+    .btn-generate:hover::after {
+        opacity: 1;
+    }
+
+    /* Itinerary display */
+    .itinerary-display {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 5px 25px rgba(0, 0, 0, 0.08);
+        padding: 3rem;
+        margin-top: 3rem;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .itinerary-header {
+        color: #2c3e50;
+        margin-bottom: 2rem;
+        font-weight: 700;
+        font-size: 2rem;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .btn-download {
+        background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+        border: none;
+        padding: 0.9rem 2rem;
+        font-weight: 600;
+        box-shadow: 0 5px 20px rgba(72, 187, 120, 0.4);
+        border-radius: 50px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-download:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(72, 187, 120, 0.6);
+        background: linear-gradient(135deg, #38a169 0%, #2f855a 100%);
+    }
+
+    /* Icons */
+    .feature-icon {
+        font-size: 1.75rem;
+        margin-right: 1rem;
+        color: #667eea;
+    }
+
+    /* Form text */
+    .form-text {
+        font-size: 0.85rem;
+        color: #718096;
+    }
+
+    .text-danger {
+        font-size: 0.85rem;
+    }
+
+    /* Messages/alerts */
+    .alert {
+        border-radius: 8px;
+        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 992px) {
+        .form-check-group {
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        }
+        
+        .trip-planner-header h1 {
+            font-size: 2.2rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .form-check-group {
+            grid-template-columns: 1fr;
+        }
+        
+        .trip-planner-header {
+            padding: 2rem 0;
+        }
+        
+        .trip-planner-header h1 {
+            font-size: 1.8rem;
+        }
+        
+        .form-section {
+            padding: 1.5rem;
+        }
+        
+        .itinerary-display {
+            padding: 1.5rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="trip-planner-header text-center">
+        <h1 class="mb-3"><i class="bi bi-geo-alt-fill me-3"></i>Plan Your Perfect Trip</h1>
+        <p class="lead mb-0">Our AI will create a personalized itinerary based on your preferences</p>
+    </div>
+
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %} alert-dismissible fade show" role="alert">
+                    <i class="bi bi-info-circle-fill me-2"></i>{{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+        
+        <!-- Basic Information Section -->
+        <div class="form-section">
+            <h3><i class="bi bi-info-circle feature-icon"></i>Basic Information</h3>
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <label for="{{ form.starting_point.id_for_label }}" class="form-label">
+                        <i class="bi bi-geo-alt me-2"></i>{{ form.starting_point.label }}
+                    </label>
+                    {{ form.starting_point }}
+                    {% if form.starting_point.errors %}
+                        <div class="text-danger small mt-1">
+                            <i class="bi bi-exclamation-circle-fill me-1"></i>{{ form.starting_point.errors }}
+                        </div>
+                    {% endif %}
+                    <div class="form-text small">
+                        <i class="bi bi-info-circle me-1"></i>{{ form.starting_point.help_text }}
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <label for="{{ form.destination.id_for_label }}" class="form-label">
+                        <i class="bi bi-geo-fill me-2"></i>{{ form.destination.label }}
+                    </label>
+                    {{ form.destination }}
+                    {% if form.destination.errors %}
+                        <div class="text-danger small mt-1">
+                            <i class="bi bi-exclamation-circle-fill me-1"></i>{{ form.destination.errors }}
+                        </div>
+                    {% endif %}
+                    <div class="form-text small">
+                        <i class="bi bi-info-circle me-1"></i>{{ form.destination.help_text }}
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <label for="{{ form.trip_duration_days.id_for_label }}" class="form-label">
+                        <i class="bi bi-calendar-range me-2"></i>{{ form.trip_duration_days.label }}
+                    </label>
+                    <div class="input-group">
+                        {{ form.trip_duration_days }}
+                        <span class="input-group-text">days</span>
+                    </div>
+                    {% if form.trip_duration_days.errors %}
+                        <div class="text-danger small mt-1">
+                            <i class="bi bi-exclamation-circle-fill me-1"></i>{{ form.trip_duration_days.errors }}
+                        </div>
+                    {% endif %}
+                    <div class="form-text small">
+                        <i class="bi bi-info-circle me-1"></i>{{ form.trip_duration_days.help_text }}
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <label for="{{ form.budget.id_for_label }}" class="form-label">
+                        <i class="bi bi-currency-dollar me-2"></i>{{ form.budget.label }}
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text">$</span>
+                        {{ form.budget }}
+                    </div>
+                    {% if form.budget.errors %}
+                        <div class="text-danger small mt-1">
+                            <i class="bi bi-exclamation-circle-fill me-1"></i>{{ form.budget.errors }}
+                        </div>
+                    {% endif %}
+                    <div class="form-text small">
+                        <i class="bi bi-info-circle me-1"></i>{{ form.budget.help_text }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Travel Preferences Section -->
+        <div class="form-section">
+            <h3><i class="bi bi-airplane feature-icon"></i>Travel Preferences</h3>
+            <div class="mb-4">
+                <label class="form-label">
+                    <i class="bi bi-gear me-2"></i>{{ form.travel_mode_preference.label }}
+                </label>
+                <div class="form-check-group">
+                    {% for choice in form.travel_mode_preference %}
+                        <div class="form-check">
+                            {{ choice.tag }}
+                            <label class="form-check-label" for="{{ choice.id_for_label }}">
+                                {% if choice.choice_label == "Flight" %}
+                                    <i class="bi bi-airplane me-2"></i>
+                                {% elif choice.choice_label == "Train" %}
+                                    <i class="bi bi-train-lightrail-front me-2"></i>
+                                {% elif choice.choice_label == "Car" %}
+                                    <i class="bi bi-car-front me-2"></i>
+                                {% elif choice.choice_label == "Bus" %}
+                                    <i class="bi bi-bus-front me-2"></i>
+                                {% endif %}
+                                {{ choice.choice_label }}
+                            </label>
+                        </div>
+                    {% endfor %}
+                </div>
+                {% if form.travel_mode_preference.errors %}
+                    <div class="text-danger small mt-1">
+                        <i class="bi bi-exclamation-circle-fill me-1"></i>{{ form.travel_mode_preference.errors }}
+                    </div>
+                {% endif %}
+                <div class="form-text small">
+                    <i class="bi bi-info-circle me-1"></i>{{ form.travel_mode_preference.help_text }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Accommodation & Food Section -->
+        <div class="form-section">
+            <h3><i class="bi bi-house-heart feature-icon"></i>Lodging & Dining</h3>
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <label class="form-label">
+                        <i class="bi bi-building me-2"></i>{{ form.accommodation_preference.label }}
+                    </label>
+                    <div class="form-check-group">
+                        {% for choice in form.accommodation_preference %}
+                            <div class="form-check">
+                                {{ choice.tag }}
+                                <label class="form-check-label" for="{{ choice.id_for_label }}">
+                                    {% if choice.choice_label == "Luxury Hotel" %}
+                                        <i class="bi bi-stars me-2"></i>
+                                    {% elif choice.choice_label == "Mid-range Hotel" %}
+                                        <i class="bi bi-building me-2"></i>
+                                    {% elif choice.choice_label == "Budget Hotel" %}
+                                        <i class="bi bi-building-check me-2"></i>
+                                    {% elif choice.choice_label == "Hostel" %}
+                                        <i class="bi bi-people me-2"></i>
+                                    {% elif choice.choice_label == "Vacation Rental" %}
+                                        <i class="bi bi-house-door me-2"></i>
+                                    {% endif %}
+                                    {{ choice.choice_label }}
+                                </label>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    {% if form.accommodation_preference.errors %}
+                        <div class="text-danger small mt-1">
+                            <i class="bi bi-exclamation-circle-fill me-1"></i>{{ form.accommodation_preference.errors }}
+                        </div>
+                    {% endif %}
+                    <div class="form-text small">
+                        <i class="bi bi-info-circle me-1"></i>{{ form.accommodation_preference.help_text }}
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <label class="form-label">
+                        <i class="bi bi-egg-fried me-2"></i>{{ form.food_preference.label }}
+                    </label>
+                    <div class="form-check-group">
+                        {% for choice in form.food_preference %}
+                            <div class="form-check">
+                                {{ choice.tag }}
+                                <label class="form-check-label" for="{{ choice.id_for_label }}">
+                                    {% if choice.choice_label == "Fine Dining" %}
+                                        <i class="bi bi-egg-fried me-2"></i>
+                                    {% elif choice.choice_label == "Local Cuisine" %}
+                                        <i class="bi bi-basket me-2"></i>
+                                    {% elif choice.choice_label == "Street Food" %}
+                                        <i class="bi bi-cup-hot me-2"></i>
+                                    {% elif choice.choice_label == "Vegetarian" %}
+                                        <i class="bi bi-flower1 me-2"></i>
+                                    {% elif choice.choice_label == "Vegan" %}
+                                        <i class="bi bi-tree me-2"></i>
+                                    {% endif %}
+                                    {{ choice.choice_label }}
+                                </label>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    {% if form.food_preference.errors %}
+                        <div class="text-danger small mt-1">
+                            <i class="bi bi-exclamation-circle-fill me-1"></i>{{ form.food_preference.errors }}
+                        </div>
+                    {% endif %}
+                    <div class="form-text small">
+                        <i class="bi bi-info-circle me-1"></i>{{ form.food_preference.help_text }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Interests Section -->
+        <div class="form-section">
+            <h3><i class="bi bi-heart feature-icon"></i>Your Interests</h3>
+            <div class="mb-4">
+                <label class="form-label">
+                    <i class="bi bi-star me-2"></i>{{ form.interests.label }}
+                </label>
+                <div class="form-check-group">
+                    {% for choice in form.interests %}
+                        <div class="form-check">
+                            {{ choice.tag }}
+                            <label class="form-check-label" for="{{ choice.id_for_label }}">
+                                {% if choice.choice_label == "Adventure" %}
+                                    <i class="bi bi-signpost-split me-2"></i>
+                                {% elif choice.choice_label == "Beach" %}
+                                    <i class="bi bi-umbrella me-2"></i>
+                                {% elif choice.choice_label == "Cultural" %}
+                                    <i class="bi bi-building-columns me-2"></i>
+                                {% elif choice.choice_label == "Food" %}
+                                    <i class="bi bi-egg-fried me-2"></i>
+                                {% elif choice.choice_label == "Historical" %}
+                                    <i class="bi bi-book me-2"></i>
+                                {% elif choice.choice_label == "Nature" %}
+                                    <i class="bi bi-tree me-2"></i>
+                                {% elif choice.choice_label == "Shopping" %}
+                                    <i class="bi bi-bag me-2"></i>
+                                {% elif choice.choice_label == "Nightlife" %}
+                                    <i class="bi bi-moon-stars me-2"></i>
+                                {% endif %}
+                                {{ choice.choice_label }}
+                            </label>
+                        </div>
+                    {% endfor %}
+                </div>
+                {% if form.interests.errors %}
+                    <div class="text-danger small mt-1">
+                        <i class="bi bi-exclamation-circle-fill me-1"></i>{{ form.interests.errors }}
+                    </div>
+                {% endif %}
+                <div class="form-text small">
+                    <i class="bi bi-info-circle me-1"></i>{{ form.interests.help_text }}
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-4 mb-5">
+            <button type="submit" class="btn btn-primary btn-generate px-5">
+                <i class="bi bi-magic me-2"></i>Generate My Itinerary
+            </button>
+        </div>
+    </form>
+
+    {% if itinerary_html %}
+        <div class="itinerary-display">
+            <h2 class="itinerary-header">
+                <i class="bi bi-map me-3"></i>Your Personalized Itinerary
+            </h2>
+            <div class="markdown-content">
+                {{ itinerary_html|safe }}
+            </div>
+        </div>
+        
+        {% if pdf_download_url %}
+            <div class="text-center mt-4 mb-5">
+                <a href="{{ pdf_download_url }}" class="btn btn-success btn-download px-5">
+                    <i class="bi bi-download me-2"></i>Download Itinerary as PDF
+                </a>
+            </div>
+        {% endif %}
+    {% endif %}
+</div>
+{% endblock %}

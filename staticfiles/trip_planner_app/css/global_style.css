@@ -1,0 +1,287 @@
+/* personalized_trip_planner/static/css/global_style.css */
+
+/* Define CSS Variables for consistent colors */
+:root {
+    --primary-blue: #6B73FF;
+    --secondary-blue: #000DFF;
+    --accent-yellow: #ffc107;
+    --dark-blue-text: #34495e;
+    --light-grey-bg: #f0f2f5;
+    --white: #ffffff;
+    --hover-blue: #4a54ff;
+    --dark-grey-footer: #343a40;
+}
+
+body {
+    background-color: var(--light-grey-bg);
+    font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    color: var(--dark-blue-text);
+    /* For sticky footer layout via Bootstrap classes */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: relative; /* Establishes a stacking context for z-index */
+    z-index: 1; /* Ensures body content is above the background div */
+    overflow-x: hidden; /* Prevent horizontal scrollbar from animations */
+}
+
+/* Main content area takes available vertical space */
+main {
+    flex-grow: 1;
+    padding-bottom: 30px; /* Add some padding to main content before footer */
+}
+
+.container {
+    max-width: 960px; /* Slightly wider default container for better content flow */
+    z-index: 2; /* Ensure container content is above overlay */
+    position: relative; /* Needed for z-index context */
+}
+
+/* Navbar Styling */
+.navbar {
+    background: linear-gradient(90deg, var(--primary-blue) 0%, var(--secondary-blue) 100%) !important; /* Apply a vibrant gradient */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Soft shadow for depth */
+    padding: 0.8rem 1rem;
+    animation: fadeInDown 0.8s ease-out; /* Navbar appears with a subtle animation */
+}
+
+.navbar-brand {
+    font-weight: bold;
+    font-size: 1.6rem;
+    color: var(--white) !important; /* Ensure brand text is white */
+    transition: transform 0.2s ease;
+}
+.navbar-brand:hover {
+    transform: translateX(5px); /* Subtle slide effect on hover */
+}
+.navbar-brand img {
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.5)); /* Subtle shadow on logo for pop */
+}
+
+.navbar-nav .nav-link {
+    font-weight: 500;
+    margin-left: 20px;
+    color: rgba(255, 255, 255, 0.8) !important; /* Slightly transparent white for default links */
+    transition: all 0.3s ease;
+    padding: 0.5rem 0; /* Align with navbar brand height */
+}
+.navbar-nav .nav-link:hover {
+    color: var(--white) !important;
+    transform: translateY(-2px); /* Subtle lift on hover */
+}
+.navbar-nav .nav-link.active {
+    color: var(--white) !important;
+    border-bottom: 2px solid var(--accent-yellow); /* Yellow underline for active link */
+    padding-bottom: 3px; /* Ensure underline doesn't cut text */
+}
+
+/* Get Started Button in Navbar */
+.get-started-btn {
+    background-color: var(--accent-yellow);
+    border-color: var(--accent-yellow);
+    color: #212529 !important; /* Dark text on yellow for contrast */
+    font-weight: 600;
+    border-radius: 5px;
+    padding: 0.4rem 1.2rem;
+    transition: all 0.3s ease;
+}
+.get-started-btn:hover {
+    background-color: #e0a800; /* Darker yellow on hover */
+    border-color: #d39e00;
+    transform: translateY(-2px); /* Lift effect */
+    box-shadow: 0 4px 10px rgba(255, 193, 7, 0.4); /* Shadow on hover */
+}
+
+/* Interactive Background Styling (Moved here from style.css for global application) */
+#interactive-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -2; /* Ensure it's behind all main content */
+    background-size: cover;
+    background-position: center center;
+    transition: background-image 1s ease-in-out; /* Smooth transition between images */
+    animation: fadeZoom 20s infinite alternate forwards; /* Apply animation for zoom and fade */
+    filter: brightness(0.8); /* Slightly dim the background images for better text readability */
+    will-change: transform, opacity; /* Optimize for animation performance */
+}
+
+/* Overlay for readability (Moved here for global application) */
+#interactive-background::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6); /* Darker semi-transparent overlay for enhanced contrast */
+    z-index: -1; /* Above the background image, below content */
+}
+
+/* Keyframes for background animation (Moved here for global application) */
+@keyframes fadeZoom {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.05); }
+}
+
+/* General button styles (kept in global as they are common site-wide) */
+.btn-primary {
+    background-color: var(--primary-blue);
+    border-color: var(--primary-blue);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+.btn-primary:hover {
+    background-color: var(--hover-blue);
+    border-color: var(--hover-blue);
+}
+.btn-warning {
+    background-color: var(--accent-yellow);
+    border-color: var(--accent-yellow);
+    color: #212529; /* Dark text on yellow */
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+.btn-warning:hover {
+    background-color: #e0a800;
+    border-color: #d39e00;
+}
+.btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+.btn-success:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+}
+
+/* Card styling for consistency across the site */
+.card {
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+}
+
+/* Message Alerts Styling */
+.messages {
+    margin-bottom: 2.5rem; /* More space below alerts */
+    animation: fadeIn 0.5s ease-out; /* Fade-in animation for alerts */
+}
+
+.alert {
+    border-radius: 10px; /* More rounded alerts */
+    font-size: 1.1rem; /* Slightly larger font */
+    padding: 1.5rem 2rem; /* More padding inside alerts */
+    border-left: 6px solid; /* Bold left border for visual emphasis */
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08); /* Subtle shadow for depth */
+    position: relative; /* Needed for close button positioning */
+}
+
+/* Specific alert colors with consistent palette */
+.alert-success {
+    background-color: #e6ffed; /* Light green */
+    border-color: #28a745; /* Darker green border */
+    color: #1a6d38; /* Green text */
+}
+.alert-danger {
+    background-color: #ffe6e6; /* Light red */
+    border-color: #dc3545; /* Darker red border */
+    color: #a72332; /* Red text */
+}
+.alert-info {
+    background-color: #e0f2f7; /* Light blue */
+    border-color: #17a2b8; /* Darker blue border */
+    color: #0d6e7f; /* Blue text */
+}
+.alert-warning {
+    background-color: #fff8e6; /* Light yellow */
+    border-color: #ffc107; /* Darker yellow border */
+    color: #8f6b00; /* Yellow text */
+}
+
+.btn-close {
+    font-size: 1rem;
+    position: absolute;
+    right: 1.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+/* Footer styling */
+footer {
+    background-color: var(--dark-grey-footer) !important; /* Use CSS variable for consistency */
+    color: #e9ecef; /* Light text for footer */
+    padding: 20px 0;
+    font-size: 0.9rem;
+    z-index: 1; /* Ensure footer is above the background */
+}
+footer p {
+    margin-bottom: 0;
+}
+
+
+/* General Animations (can be used across pages for entrance effects) */
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes zoomIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Section Specific Common Styling (for titles, etc.) */
+.section-title {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 60px;
+    font-weight: 700;
+    color: var(--dark-blue-text);
+    font-size: 2.8rem; /* Larger section titles */
+    animation: fadeInUp 0.8s ease-out; /* Animate titles on entry */
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px; /* Wider underline for titles */
+    height: 5px; /* Thicker underline */
+    background: linear-gradient(90deg, var(--primary-blue), var(--accent-yellow)); /* Gradient underline */
+    border-radius: 3px;
+}
