@@ -1,0 +1,38 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Choose Trip Type{% endblock %}
+
+{% block content %}
+<div class="container my-5 text-center">
+    <h1 class="display-4 mb-4">What kind of journey awaits?</h1>
+    <p class="lead mb-5">Please select the nature of your trip to receive tailored recommendations.</p>
+
+    {% if error %}
+        <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+
+    <form method="post" action="{% url 'router:trip_choice' %}">
+        {% csrf_token %}
+        <div class="row justify-content-center">
+            
+            <div class="col-md-5 mb-4">
+                <button type="submit" name="trip_type" value="devotional" class="btn btn-outline-warning w-100 p-5 shadow-lg">
+                    <i class="bi bi-person-heart display-1"></i>
+                    <h3 class="mt-3">Devotional Trip</h3>
+                    <p class="mb-0 text-muted">Temples, Shrines, and Sacred Sites</p>
+                </button>
+            </div>
+
+            <div class="col-md-5 mb-4">
+                <button type="submit" name="trip_type" value="recreational" class="btn btn-outline-primary w-100 p-5 shadow-lg">
+                    <i class="bi bi-globe-americas display-1"></i>
+                    <h3 class="mt-3">Recreational Trip</h3>
+                    <p class="mb-0 text-muted">Sightseeing, Adventure, and Local Cuisine</p>
+                </button>
+            </div>
+
+        </div>
+    </form>
+</div>
+{% endblock %}

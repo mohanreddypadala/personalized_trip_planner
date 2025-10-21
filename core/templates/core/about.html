@@ -1,0 +1,386 @@
+{% extends 'core/base.html' %}
+
+{% block title %}About Our AI Trip Planner{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Modern about page styling */
+    .about-hero {
+        background: linear-gradient(135deg, rgba(44, 62, 80, 0.9) 0%, rgba(52, 152, 219, 0.8) 100%);
+        background-size: cover;
+        background-position: center;
+        color: white;
+        padding: 120px 0;
+        margin-bottom: 60px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .about-hero h1 {
+        font-size: 3.5rem;
+        font-weight: 800;
+        margin-bottom: 20px;
+        animation: fadeInUp 1s ease;
+    }
+
+    .about-hero .lead {
+        font-size: 1.5rem;
+        max-width: 800px;
+        margin: 0 auto;
+        animation: fadeInUp 1s ease 0.3s forwards;
+        opacity: 0;
+    }
+
+    .feature-card {
+        border: none;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        margin-bottom: 30px;
+        background: white;
+        height: 100%;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+    }
+
+    .feature-icon {
+        font-size: 2.5rem;
+        color: #3498db;
+        margin-bottom: 20px;
+    }
+
+    .moto-section {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        padding: 60px 0;
+        margin: 60px 0;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .moto-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url('https://upload.wikimedia.org/wikipedia/commons/8/80/World_map_-_low_resolution.svg') center/contain no-repeat;
+        opacity: 0.05;
+    }
+
+    .moto-quote {
+        font-size: 2rem;
+        font-weight: 600;
+        color: #2c3e50;
+        position: relative;
+        padding: 0 50px;
+    }
+
+    .moto-quote::before,
+    .moto-quote::after {
+        content: '"';
+        font-size: 5rem;
+        color: rgba(52, 152, 219, 0.3);
+        position: absolute;
+        font-family: serif;
+        line-height: 1;
+    }
+
+    .moto-quote::before {
+        top: -20px;
+        left: 0;
+    }
+
+    .moto-quote::after {
+        bottom: -50px;
+        right: 0;
+    }
+
+    .benefit-item {
+        padding: 20px;
+        border-left: 4px solid #3498db;
+        margin-bottom: 20px;
+        background: white;
+        border-radius: 0 8px 8px 0;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+
+    .benefit-item.animated {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    .benefit-item:hover {
+        transform: translateX(5px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .benefit-icon {
+        color: #3498db;
+        margin-right: 15px;
+        font-size: 1.5rem;
+    }
+
+    .tech-stack {
+        margin: 60px 0;
+    }
+
+    .tech-logo {
+        height: 60px;
+        margin: 15px;
+        filter: grayscale(100%);
+        opacity: 0.7;
+        transition: all 0.3s ease;
+    }
+
+    .tech-logo:hover {
+        filter: grayscale(0%);
+        opacity: 1;
+        transform: scale(1.1);
+    }
+
+    .cta-section {
+        background: linear-gradient(135deg, #3498db 0%, #2c3e50 100%);
+        color: white;
+        padding: 80px 0;
+        text-align: center;
+        border-radius: 12px;
+        margin: 60px 0;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .cta-section h2 {
+        font-size: 2.5rem;
+        margin-bottom: 30px;
+    }
+
+    .btn-cta {
+        background: white;
+        color: #2c3e50;
+        border: none;
+        padding: 15px 40px;
+        font-size: 1.2rem;
+        font-weight: 600;
+        border-radius: 50px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .btn-cta:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 992px) {
+        .about-hero h1 {
+            font-size: 2.8rem;
+        }
+        
+        .about-hero .lead {
+            font-size: 1.3rem;
+        }
+        
+        .moto-quote {
+            font-size: 1.7rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .about-hero {
+            padding: 80px 0;
+        }
+        
+        .about-hero h1 {
+            font-size: 2.2rem;
+        }
+        
+        .moto-quote {
+            font-size: 1.4rem;
+            padding: 0 30px;
+        }
+        
+        .moto-quote::before,
+        .moto-quote::after {
+            font-size: 3rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="about-hero" style="background-image: linear-gradient(135deg, rgba(44, 62, 80, 0.9) 0%, rgba(52, 152, 219, 0.8) 100%), url('https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');">
+    <div class="container">
+        <h1>About Our AI Trip Planner</h1>
+        <p class="lead">Revolutionizing travel planning through artificial intelligence to create perfectly personalized journeys for every traveler</p>
+    </div>
+</section>
+
+<div class="container">
+    <div class="row mb-5">
+        <div class="col-lg-8 mx-auto text-center">
+            <h2 class="mb-4">Project Overview</h2>
+            <p class="lead">
+                The Personalized Trip Planner harnesses cutting-edge AI technology to transform how you plan travel, saving you time while delivering exceptional results.
+            </p>
+        </div>
+    </div>
+
+    <div class="row mb-5">
+        <div class="col-md-6">
+            <div class="feature-card">
+                <div class="card-body p-4">
+                    <i class="bi bi-cpu feature-icon"></i>
+                    <h3>AI-Powered Intelligence</h3>
+                    <p>Our proprietary algorithms analyze millions of data points including travel routes, accommodation options, attraction reviews, and pricing to craft the perfect itinerary tailored to your preferences.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="feature-card">
+                <div class="card-body p-4">
+                    <i class="bi bi-person-check feature-icon"></i>
+                    <h3>Deep Personalization</h3>
+                    <p>Whether you're a budget backpacker, luxury traveler, food enthusiast, or adventure seeker, our system adapts to your unique travel style and continuously improves its recommendations.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section class="moto-section">
+        <div class="container text-center">
+            <blockquote class="moto-quote">
+                Crafting Journeys, One Intelligent Plan at a Time
+                <footer class="blockquote-footer mt-3 text-dark">Personalized Trip Planner Team</footer>
+            </blockquote>
+        </div>
+    </section>
+
+    <div class="row">
+        <div class="col-lg-10 mx-auto">
+            <h2 class="text-center mb-5">How Our Technology Enhances Your Travel</h2>
+            
+            <div class="benefit-item" data-delay="0">
+                <div class="d-flex">
+                    <i class="bi bi-robot benefit-icon"></i>
+                    <div>
+                        <h4>Gen AI Optimization</h4>
+                        <p>Our core strength lies in the intelligent optimization performed by Generative AI. It analyzes vast amounts of travel data and user preferences to suggest the most optimal routes, stays, and activities that maximize your experience within your financial constraints.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="benefit-item" data-delay="100">
+                <div class="d-flex">
+                    <i class="bi bi-plug benefit-icon"></i>
+                    <div>
+                        <h4>Multi-API Integration</h4>
+                        <p>We integrate with multiple external APIs for real-time data on hotels, flights, attractions, and food, ensuring our recommendations are current and relevant. (Note: Current demo uses simulated data for these, but the architecture supports live integration).</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="benefit-item" data-delay="200">
+                <div class="d-flex">
+                    <i class="bi bi-cash-stack benefit-icon"></i>
+                    <div>
+                        <h4>Smart Budget Management</h4>
+                        <p>The system strictly adheres to your budget, providing transparent breakdowns and recommendations that prevent overspending while maximizing value at every point of your journey.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="benefit-item" data-delay="300">
+                <div class="d-flex">
+                    <i class="bi bi-heart benefit-icon"></i>
+                    <div>
+                        <h4>Interest-Based Recommendations</h4>
+                        <p>From adventure seekers to history buffs, foodies to nature lovers, our AI learns your interests to craft an itinerary that truly reflects your travel style and preferences.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="benefit-item" data-delay="400">
+                <div class="d-flex">
+                    <i class="bi bi-file-earmark-pdf benefit-icon"></i>
+                    <div>
+                        <h4>Convenient Export Options</h4>
+                        <p>Once your perfect plan is ready, you can easily download it as a beautifully formatted PDF for offline access, printing, or sharing with fellow travelers.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tech-stack text-center">
+        <h3 class="mb-4">Our Technology Stack</h3>
+        <div class="d-flex flex-wrap justify-content-center">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/c/c3/Python-logo-notext.svg" alt="Python" class="tech-logo">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/7/75/Django_logo.svg" alt="Django" class="tech-logo">
+           
+            <img src="https://upload.wikimedia.org/wikipedia/commons/b/b2/Bootstrap_logo.svg" alt="Bootstrap" class="tech-logo">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/9/99/Unofficial_JavaScript_logo_2.svg" alt="JavaScript" class="tech-logo">
+        </div>
+    </div>
+
+    <section class="cta-section">
+        <div class="container">
+            <h2>Ready to Experience Smarter Travel Planning?</h2>
+            <p class="lead mb-4">Let our AI create your perfect itinerary in minutes</p>
+            <a href="{% url 'router:trip_choice' %}" class="btn btn-cta">
+                Start Planning Now <i class="bi bi-arrow-right ms-2"></i>
+            </a>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // Animate benefit items on scroll
+    const benefitItems = document.querySelectorAll('.benefit-item');
+    
+    function checkScroll() {
+        benefitItems.forEach((item) => {
+            const itemPosition = item.getBoundingClientRect().top;
+            const screenPosition = window.innerHeight / 1.3;
+            const delay = item.getAttribute('data-delay') || 0;
+            
+            if (itemPosition < screenPosition) {
+                setTimeout(() => {
+                    item.classList.add('animated');
+                }, delay);
+            }
+        });
+    }
+    
+    // Check on load and scroll
+    window.addEventListener('load', checkScroll);
+    window.addEventListener('scroll', checkScroll);
+    
+    // Initial check
+    checkScroll();
+});
+</script>
+{% endblock %}

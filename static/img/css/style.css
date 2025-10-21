@@ -1,0 +1,63 @@
+/* Custom Styles for Itinerary Images */
+.itinerary-image {
+    max-width: 100%; /* Ensures image doesn't overflow its parent container */
+    height: auto;    /* Maintains aspect ratio when scaling */
+    display: block;  /* Ensures it behaves like a block element for margin auto */
+    margin-left: auto; /* Centers the image */
+    margin-right: auto; /* Centers the image */
+    margin-top: 15px; /* Add some space above the image */
+    margin-bottom: 15px; /* Add some space below the image */
+    border-radius: 8px; /* Slightly rounded corners for aesthetics */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Subtle shadow for depth */
+}
+
+/* You might already have other styles, add this at the end or in a logical place. */
+/* Example of other existing styles: */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f8f9fa;
+    color: #333;
+}
+
+.container {
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+/* ... other styles ... */
+
+/* Styles for itinerary display */
+.day-heading {
+    color: #0056b3;
+    margin-top: 25px;
+    margin-bottom: 10px;
+    border-bottom: 2px solid #e9ecef;
+    padding-bottom: 5px;
+}
+
+.list-group-item strong {
+    color: #34495e;
+}
+
+.list-unstyled.nested-list {
+    padding-left: 20px; /* Indent nested lists */
+    margin-bottom: 0;
+}
+
+.nested-list li {
+    margin-bottom: 5px;
+}
+
+.total-line {
+    background-color: #e2f0fb;
+    border-top: 1px solid #cce5ff;
+}
+
+.card {
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.05);
+}
+
+.form-label {
+    font-weight: bold;
+}

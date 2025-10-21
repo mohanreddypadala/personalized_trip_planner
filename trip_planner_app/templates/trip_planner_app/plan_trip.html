@@ -1,0 +1,693 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Plan Your Trip{% endblock %}
+
+{% block content %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+<style>
+    /* Professional color scheme */
+    :root {
+        --primary: #2c3e50;
+        --secondary: #3498db;
+        --accent: #1abc9c;
+        --light: #f8f9fa;
+        --dark: #2c3e50;
+        --gray: #6c757d;
+        --border: #e1e5eb;
+        --travel: #e74c3c;
+        --food: #f39c12;
+        --accommodation: #9b59b6;
+        --activities: #27ae60;
+    }
+
+    /* Card & Form Styling */
+    .card.form-card {
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        background: white;
+        border: 1px solid var(--border);
+        margin-bottom: 2rem;
+    }
+    
+    .card.form-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 35px rgba(0,0,0,0.12);
+    }
+
+    .form-label {
+        font-weight: 600;
+        font-size: 0.95rem;
+        color: var(--dark);
+        margin-bottom: 0.5rem;
+    }
+
+    input.form-control, select.form-select {
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        padding: 0.75rem 1rem;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        background-color: var(--light);
+    }
+
+    input.form-control:focus, select.form-select:focus {
+        border-color: var(--secondary);
+        box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.15);
+        outline: none;
+        background-color: white;
+    }
+
+    .form-check-label {
+        font-size: 0.9rem;
+        margin-left: 0.4rem;
+        color: var(--dark);
+    }
+
+    .btn-primary {
+        font-size: 1rem;
+        padding: 0.85rem 1.5rem;
+        border-radius: 8px;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        letter-spacing: 0.5px;
+        background-color: var(--secondary);
+        border: none;
+        font-weight: 600;
+    }
+    
+    .btn-primary:hover {
+        background-color: #2980b9;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+    }
+
+    /* Loading spinner inside button */
+    .btn-primary.loading::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin: -12px 0 0 -12px;
+        width: 24px;
+        height: 24px;
+        border: 3px solid rgba(255,255,255,0.3);
+        border-top: 3px solid #fff;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg);}
+        100% { transform: rotate(360deg);}
+    }
+
+    h1, h2 {
+        font-weight: 700;
+        color: var(--dark);
+        margin-bottom: 1.5rem;
+    }
+    
+    h1 {
+        font-size: 1.8rem;
+        position: relative;
+        padding-bottom: 0.75rem;
+    }
+    
+    h1:after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 3px;
+        background: var(--accent);
+        border-radius: 3px;
+    }
+
+    .itinerary-output li {
+        padding: 0.65rem 0;
+        font-size: 0.95rem;
+        border-bottom: 1px solid rgba(0,0,0,0.05);
+    }
+    
+    .itinerary-output li:last-child {
+        border-bottom: none;
+    }
+
+    .nested-list li {
+        font-size: 0.9rem;
+        padding-left: 1.2rem;
+        color: var(--gray);
+    }
+
+    /* Professional itinerary styling */
+    .itinerary-container {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        padding: 2rem;
+        margin-top: 1.5rem;
+    }
+    
+    .day-section {
+        margin-bottom: 2rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid var(--border);
+    }
+    
+    .day-section:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+    
+    .day-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 1px solid var(--border);
+    }
+    
+    .day-number {
+        background: var(--secondary);
+        color: white;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        margin-right: 1rem;
+        font-size: 0.9rem;
+    }
+    
+    .day-title {
+        font-weight: 600;
+        color: var(--dark);
+        margin: 0;
+        font-size: 1.2rem;
+    }
+
+    /* Enhanced category styling */
+    .category-label {
+        font-weight: 700;
+        display: inline-block;
+        margin-right: 0.5rem;
+        padding: 0.2rem 0.5rem;
+        border-radius: 4px;
+        background-color: rgba(0,0,0,0.05);
+    }
+    
+    .travel-label {
+        color: var(--travel);
+        border-left: 3px solid var(--travel);
+    }
+    
+    .food-label {
+        color: var(--food);
+        border-left: 3px solid var(--food);
+    }
+    
+    .accommodation-label {
+        color: var(--accommodation);
+        border-left: 3px solid var(--accommodation);
+    }
+    
+    .activities-label {
+        color: var(--activities);
+        border-left: 3px solid var(--activities);
+    }
+    
+    /* Make category headers stand out more */
+    .category-header {
+        font-weight: 700;
+        font-size: 1rem;
+        margin: 1rem 0 0.5rem 0;
+        padding-bottom: 0.25rem;
+        border-bottom: 1px dashed var(--border);
+    }
+
+    /* Reduce images in itinerary output */
+    .itinerary-image {
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+        margin: 0.75rem 0;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        transition: transform 0.3s ease;
+    }
+    
+    .itinerary-image:hover {
+        transform: scale(1.02);
+    }
+
+    /* Form sections */
+    .form-section {
+        margin-bottom: 2rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid var(--border);
+    }
+    
+    .form-section:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+    
+    .section-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--dark);
+        margin-bottom: 1.25rem;
+        display: flex;
+        align-items: center;
+    }
+    
+    .section-title i {
+        margin-right: 0.5rem;
+        color: var(--secondary);
+    }
+
+    /* Checkbox group styling */
+    .form-check-group {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 0.75rem;
+    }
+    
+    .form-check {
+        margin-bottom: 0.5rem;
+    }
+    
+    .form-check-input:checked {
+        background-color: var(--secondary);
+        border-color: var(--secondary);
+    }
+
+    /* Messages styling */
+    .messages .alert {
+        opacity: 0;
+        transform: translateY(-10px);
+        animation: fadeIn 0.5s forwards;
+        border-radius: 8px;
+        border: none;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+    }
+
+    @keyframes fadeIn {
+        to { opacity: 1; transform: translateY(0);}
+    }
+    
+    /* Info box styling */
+    .info-box {
+        background: rgba(52, 152, 219, 0.08);
+        border-radius: 8px;
+        padding: 1rem 1.25rem;
+        margin-bottom: 1.5rem;
+        border-left: 4px solid var(--secondary);
+    }
+    
+    .info-box p {
+        margin-bottom: 0;
+        color: var(--dark);
+        font-size: 0.95rem;
+    }
+    
+    /* Budget summary styling */
+    .budget-summary {
+        background: rgba(39, 174, 96, 0.08);
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-top: 1.5rem;
+        border-left: 4px solid var(--activities);
+    }
+    
+    .budget-summary h4 {
+        color: var(--dark);
+        margin-bottom: 1rem;
+        font-size: 1.1rem;
+    }
+    
+    .budget-item {
+        margin-bottom: 0.75rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 1px solid rgba(0,0,0,0.05);
+    }
+    
+    .budget-item:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+    }
+    
+    .budget-category {
+        font-weight: 600;
+        color: var(--dark);
+    }
+    
+    .budget-amount {
+        font-weight: 600;
+        color: var(--activities);
+    }
+    
+    .tips-section {
+        margin-top: 1.5rem;
+        padding-top: 1rem;
+        border-top: 1px solid var(--border);
+    }
+    
+    .tips-section h5 {
+        color: var(--dark);
+        margin-bottom: 0.75rem;
+    }
+    
+    .tips-list li {
+        margin-bottom: 0.5rem;
+        padding-left: 1rem;
+        position: relative;
+    }
+    
+    .tips-list li:before {
+        content: '•';
+        color: var(--secondary);
+        font-weight: bold;
+        position: absolute;
+        left: 0;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .card.form-card {
+            padding: 1.5rem;
+        }
+        
+        .form-check-group {
+            grid-template-columns: 1fr;
+        }
+        
+        .itinerary-container {
+            padding: 1.5rem;
+        }
+    }
+</style>
+
+<div class="container my-5">
+    <h1 class="text-center">Plan Your Personalized Trip</h1>
+    
+    <div class="info-box">
+        <p class="text-center mb-0">
+            You selected a <strong>{{ trip_type|title }}</strong> trip. Please fill out the details below.
+            {% if trip_type == 'devotional' %}
+            <br>
+            <em>Note: Advanced preferences are hidden for a focused devotional journey.</em>
+            {% endif %}
+        </p>
+    </div>
+
+    {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="card form-card">
+        <form method="post" id="tripForm">
+            {% csrf_token %}
+            <input type="hidden" name="trip_type" value="{{ trip_type }}">
+            {{ form.trip_type }}
+
+            <div class="form-section">
+                <div class="section-title">
+                    <i class="bi bi-geo-alt"></i> Trip Basics
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">{{ form.budget.label }}</label>
+                        {{ form.budget }}
+                        <div class="form-text">{{ form.budget.help_text }}</div>
+                        {% if form.budget.errors %}<div class="text-danger small mt-1">{{ form.budget.errors }}</div>{% endif %}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">{{ form.trip_duration_days.label }}</label>
+                        {{ form.trip_duration_days }}
+                        <div class="form-text">{{ form.trip_duration_days.help_text }}</div>
+                        {% if form.trip_duration_days.errors %}<div class="text-danger small mt-1">{{ form.trip_duration_days.errors }}</div>{% endif %}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">{{ form.starting_point.label }}</label>
+                        {{ form.starting_point }}
+                        <div class="form-text">{{ form.starting_point.help_text }}</div>
+                        {% if form.starting_point.errors %}<div class="text-danger small mt-1">{{ form.starting_point.errors }}</div>{% endif %}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">{{ form.destination.label }}</label>
+                        {{ form.destination }}
+                        <div class="form-text">{{ form.destination.help_text }}</div>
+                        {% if form.destination.errors %}<div class="text-danger small mt-1">{{ form.destination.errors }}</div>{% endif %}
+                    </div>
+                </div>
+            </div>
+
+            {% if trip_type != 'devotional' %}
+            <div class="form-section">
+                <div class="section-title">
+                    <i class="bi bi-heart"></i> Interests & Preferences
+                </div>
+                <div class="mb-4">
+                    <label class="form-label">{{ form.interests.label }}</label>
+                    <div class="form-check-group">
+                        {% for choice in form.interests %}
+                            <div class="form-check">
+                                {{ choice.tag }}
+                                <label class="form-check-label" for="{{ choice.id_for_label }}">{{ choice.choice_label }}</label>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="form-text">{{ form.interests.help_text }}</div>
+                    {% if form.interests.errors %}<div class="text-danger small mt-1">{{ form.interests.errors }}</div>{% endif %}
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">{{ form.travel_mode_preference.label }}</label>
+                        {{ form.travel_mode_preference }}
+                        {% if form.travel_mode_preference.errors %}<div class="text-danger small mt-1">{{ form.travel_mode_preference.errors }}</div>{% endif %}
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">{{ form.accommodation_preference.label }}</label>
+                        {{ form.accommodation_preference }}
+                        {% if form.accommodation_preference.errors %}<div class="text-danger small mt-1">{{ form.accommodation_preference.errors }}</div>{% endif %}
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">{{ form.food_preference.label }}</label>
+                        {{ form.food_preference }}
+                        {% if form.food_preference.errors %}<div class="text-danger small mt-1">{{ form.food_preference.errors }}</div>{% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <button type="submit" class="btn btn-primary btn-lg w-100 mt-2" id="generateBtn">
+                <i class="bi bi-compass me-2"></i> Generate Itinerary
+            </button>
+        </form>
+    </div>
+
+    {% if itinerary_html %}
+    <h2 class="text-center">Your Personalized Itinerary</h2>
+    <div class="itinerary-container">
+        {{ itinerary_html|safe }}
+        {% if pdf_download_url %}
+        <div class="text-center mt-4">
+            <a href="{{ pdf_download_url }}" class="btn btn-success">
+                <i class="bi bi-file-earmark-arrow-down me-2"></i> Download PDF Itinerary
+            </a>
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+
+<script>
+    // Loading animation for button
+    const tripForm = document.getElementById('tripForm');
+    const generateBtn = document.getElementById('generateBtn');
+
+    tripForm.addEventListener('submit', function() {
+        generateBtn.classList.add('loading');
+        generateBtn.disabled = true;
+        generateBtn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i> Generating...';
+    });
+    
+    // Enhance itinerary display with better category styling
+    document.addEventListener('DOMContentLoaded', function() {
+        // Enhance images
+        const itineraryImages = document.querySelectorAll('.itinerary-output img');
+        itineraryImages.forEach(img => {
+            img.classList.add('itinerary-image');
+        });
+        
+        // Add day section structure if not already present
+        const dayHeaders = document.querySelectorAll('h3, h4');
+        dayHeaders.forEach(header => {
+            if (header.textContent.toLowerCase().includes('day')) {
+                const dayNumber = header.textContent.match(/\d+/);
+                if (dayNumber) {
+                    const daySection = document.createElement('div');
+                    daySection.className = 'day-section';
+                    
+                    const dayHeaderDiv = document.createElement('div');
+                    dayHeaderDiv.className = 'day-header';
+                    
+                    const dayNumberDiv = document.createElement('div');
+                    dayNumberDiv.className = 'day-number';
+                    dayNumberDiv.textContent = dayNumber[0];
+                    
+                    const dayTitle = document.createElement('div');
+                    dayTitle.className = 'day-title';
+                    dayTitle.textContent = header.textContent;
+                    
+                    dayHeaderDiv.appendChild(dayNumberDiv);
+                    dayHeaderDiv.appendChild(dayTitle);
+                    
+                    header.parentNode.insertBefore(daySection, header);
+                    daySection.appendChild(dayHeaderDiv);
+                    
+                    let nextElement = header.nextElementSibling;
+                    while (nextElement && !nextElement.textContent.toLowerCase().includes('day')) {
+                        const currentElement = nextElement;
+                        nextElement = nextElement.nextElementSibling;
+                        daySection.appendChild(currentElement);
+                    }
+                    
+                    header.remove();
+                }
+            }
+        });
+        
+        // Enhanced category styling for travel, food, accommodation, activities
+        const categoryMap = {
+            'travel': 'travel-label',
+            'food': 'food-label',
+            'accommodation': 'accommodation-label',
+            'activities': 'activities-label'
+        };
+        
+        // Process all list items in the itinerary
+        const itineraryItems = document.querySelectorAll('.itinerary-output li');
+        
+        itineraryItems.forEach(item => {
+            const text = item.textContent.toLowerCase();
+            
+            // Check for each category
+            Object.keys(categoryMap).forEach(category => {
+                if (text.startsWith(category + ':') || text.includes('\n' + category + ':')) {
+                    // Wrap the category label with appropriate styling
+                    const html = item.innerHTML;
+                    const regex = new RegExp(`(${category}:)`, 'gi');
+                    item.innerHTML = html.replace(regex, `<span class="category-label ${categoryMap[category]}">$1</span>`);
+                    
+                    // Also add a class to the list item itself for additional styling
+                    item.classList.add('category-header');
+                }
+            });
+        });
+        
+        // Enhance budget summary if present
+        const budgetSections = document.querySelectorAll('.itinerary-output p, .itinerary-output li');
+        budgetSections.forEach(section => {
+            const text = section.textContent;
+            if (text.includes('Budget Summary') || text.includes('Estimated') || text.includes('Book in Advance') || text.includes('Dress Modestly') || text.includes('Stay Hydrated') || text.includes('Maintain Purity') || text.includes('Focus on Devotion')) {
+                // Create a budget summary container
+                let budgetContainer = document.querySelector('.budget-summary');
+                if (!budgetContainer) {
+                    budgetContainer = document.createElement('div');
+                    budgetContainer.className = 'budget-summary';
+                    
+                    const budgetTitle = document.createElement('h4');
+                    budgetTitle.textContent = 'Budget Summary & Tips';
+                    budgetContainer.appendChild(budgetTitle);
+                    
+                    // Insert before the download button if it exists, otherwise at the end
+                    const downloadBtn = document.querySelector('.btn-success');
+                    if (downloadBtn) {
+                        downloadBtn.parentNode.insertBefore(budgetContainer, downloadBtn);
+                    } else {
+                        document.querySelector('.itinerary-container').appendChild(budgetContainer);
+                    }
+                }
+                
+                // Add budget items
+                if (text.includes('Estimated')) {
+                    const budgetItem = document.createElement('div');
+                    budgetItem.className = 'budget-item';
+                    
+                    // Extract category and amount
+                    const categoryMatch = text.match(/Estimated (\w+)/i);
+                    const amountMatch = text.match(/INR [\d, -]+/);
+                    
+                    if (categoryMatch && amountMatch) {
+                        const category = document.createElement('div');
+                        category.className = 'budget-category';
+                        category.textContent = categoryMatch[0];
+                        
+                        const amount = document.createElement('div');
+                        amount.className = 'budget-amount';
+                        amount.textContent = amountMatch[0];
+                        
+                        budgetItem.appendChild(category);
+                        budgetItem.appendChild(amount);
+                        budgetContainer.appendChild(budgetItem);
+                    }
+                    
+                    // Remove the original element
+                    section.style.display = 'none';
+                }
+                
+                // Add tips section
+                if (text.includes('Book in Advance') || text.includes('Dress Modestly') || text.includes('Stay Hydrated') || text.includes('Maintain Purity') || text.includes('Focus on Devotion')) {
+                    let tipsSection = budgetContainer.querySelector('.tips-section');
+                    if (!tipsSection) {
+                        tipsSection = document.createElement('div');
+                        tipsSection.className = 'tips-section';
+                        
+                        const tipsTitle = document.createElement('h5');
+                        tipsTitle.textContent = 'Travel Tips';
+                        tipsSection.appendChild(tipsTitle);
+                        
+                        const tipsList = document.createElement('ul');
+                        tipsList.className = 'tips-list';
+                        tipsSection.appendChild(tipsList);
+                        
+                        budgetContainer.appendChild(tipsSection);
+                    }
+                    
+                    const tipsList = tipsSection.querySelector('.tips-list');
+                    const tipItem = document.createElement('li');
+                    tipItem.textContent = text.replace(/^\*\*.*?\*\*\s*/, ''); // Remove bold markers if present
+                    tipsList.appendChild(tipItem);
+                    
+                    // Remove the original element
+                    section.style.display = 'none';
+                }
+            }
+        });
+    });
+</script>
+
+{% endblock %}

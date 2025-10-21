@@ -1,0 +1,623 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Welcome - AI Trip Planner{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Apple-inspired typography and base styles */
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        color: #1d1d1f;
+        background-color: #f5f5f7;
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    /* Hero section with image slideshow */
+    .hero-section {
+        position: relative;
+        height: 100vh;
+        min-height: 800px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        background: linear-gradient(to bottom, #000 0%, #1a1a1a 100%);
+    }
+
+    .hero-slideshow {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+    }
+
+    .hero-slideshow img {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0;
+        transition: opacity 1.5s ease-in-out;
+    }
+
+    .hero-slideshow img.active {
+        opacity: 0.8;
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+        padding: 0 20px;
+        max-width: 980px;
+        margin: 0 auto;
+    }
+
+    .hero-title {
+        font-size: 80px;
+        font-weight: 600;
+        letter-spacing: -0.015em;
+        color: #fff;
+        margin-bottom: 20px;
+        opacity: 0;
+        transform: translateY(50px);
+        transition: all 1s cubic-bezier(0.25, 0.1, 0.25, 1);
+    }
+
+    .hero-subtitle {
+        font-size: 28px;
+        font-weight: 400;
+        color: rgba(255, 255, 255, 0.8);
+        margin-bottom: 40px;
+        opacity: 0;
+        transform: translateY(50px);
+        transition: all 1s cubic-bezier(0.25, 0.1, 0.25, 1) 0.1s;
+    }
+
+    .hero-cta {
+        opacity: 0;
+        transform: translateY(50px);
+        transition: all 1s cubic-bezier(0.25, 0.1, 0.25, 1) 0.2s;
+    }
+
+    .hero-section.animate-in .hero-title,
+    .hero-section.animate-in .hero-subtitle,
+    .hero-section.animate-in .hero-cta {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    /* Apple-style glass button */
+    .btn-glass {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 30px;
+        padding: 12px 28px;
+        font-size: 17px;
+        font-weight: 500;
+        color: #fff;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-glass:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: scale(1.03);
+    }
+
+    .btn-glass::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0) 100%);
+        transform: translateX(-100%);
+    }
+
+    .btn-glass:hover::after {
+        animation: shine 1.5s infinite;
+    }
+
+    /* Feature sections with Apple's scroll-reveal effect */
+    .feature-section {
+        padding: 120px 0;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .feature-section.dark {
+        background: #000;
+        color: #fff;
+    }
+
+    .feature-section.light {
+        background: #f5f5f7;
+    }
+
+    .section-title {
+        font-size: 56px;
+        font-weight: 600;
+        letter-spacing: -0.015em;
+        text-align: center;
+        margin-bottom: 60px;
+        opacity: 0;
+        transform: translateY(50px);
+        transition: all 1s cubic-bezier(0.25, 0.1, 0.25, 1);
+    }
+
+    .section-subtitle {
+        font-size: 28px;
+        font-weight: 400;
+        text-align: center;
+        max-width: 800px;
+        margin: 0 auto 60px;
+        opacity: 0;
+        transform: translateY(50px);
+        transition: all 1s cubic-bezier(0.25, 0.1, 0.25, 1) 0.1s;
+    }
+
+    .feature-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 30px;
+    }
+
+    .feature-card {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-radius: 24px;
+        padding: 40px;
+        transition: all 0.5s ease;
+        opacity: 0;
+        transform: translateY(50px);
+    }
+
+    .feature-card.light {
+        background: rgba(255, 255, 255, 0.8);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    }
+
+    .feature-card.dark {
+        background: rgba(0, 0, 0, 0.3);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .feature-icon {
+        font-size: 48px;
+        margin-bottom: 20px;
+        background: linear-gradient(135deg, #0071e3, #2997ff);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .feature-title {
+        font-size: 24px;
+        font-weight: 600;
+        margin-bottom: 15px;
+    }
+
+    .feature-text {
+        font-size: 17px;
+        color: #86868b;
+        line-height: 1.5;
+    }
+
+    .feature-section.dark .feature-text {
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    /* Apple-style large feature with side-by-side layout */
+    .large-feature {
+        display: flex;
+        align-items: center;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+        gap: 60px;
+    }
+
+    .large-feature.reverse {
+        flex-direction: row-reverse;
+    }
+
+    .feature-media {
+        flex: 1;
+        position: relative;
+        opacity: 0;
+        transform: translateX(-100px);
+        transition: all 1s cubic-bezier(0.25, 0.1, 0.25, 1);
+    }
+
+    .large-feature.reverse .feature-media {
+        transform: translateX(100px);
+    }
+
+    .feature-media img {
+        width: 100%;
+        height: auto;
+        border-radius: 18px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .feature-content {
+        flex: 1;
+        opacity: 0;
+        transform: translateX(50px);
+        transition: all 1s cubic-bezier(0.25, 0.1, 0.25, 1) 0.2s;
+    }
+
+    .large-feature.reverse .feature-content {
+        transform: translateX(-50px);
+    }
+
+    .feature-headline {
+        font-size: 40px;
+        font-weight: 600;
+        letter-spacing: -0.015em;
+        margin-bottom: 20px;
+    }
+
+    .feature-description {
+        font-size: 20px;
+        color: #86868b;
+        margin-bottom: 30px;
+        line-height: 1.4;
+    }
+
+    .feature-section.dark .feature-description {
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    /* Apple-style callout section with image slideshow */
+    .callout-section {
+        padding: 120px 0;
+        text-align: center;
+        background: linear-gradient(to bottom, #000 0%, #1a1a1a 100%);
+        color: #fff;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .callout-slideshow {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+    }
+
+    .callout-slideshow img {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0;
+        transition: opacity 1.5s ease-in-out;
+    }
+
+    .callout-slideshow img.active {
+        opacity: 0.3;
+    }
+
+    .callout-content {
+        position: relative;
+        z-index: 2;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    .callout-title {
+        font-size: 64px;
+        font-weight: 600;
+        letter-spacing: -0.015em;
+        margin-bottom: 20px;
+        opacity: 0;
+        transform: translateY(50px);
+        transition: all 1s cubic-bezier(0.25, 0.1, 0.25, 1);
+    }
+
+    .callout-text {
+        font-size: 24px;
+        margin-bottom: 40px;
+        opacity: 0;
+        transform: translateY(50px);
+        transition: all 1s cubic-bezier(0.25, 0.1, 0.25, 1) 0.1s;
+    }
+
+    /* Apple-style footer */
+    .footer {
+        background: #f5f5f7;
+        padding: 40px 0;
+        font-size: 12px;
+        color: #86868b;
+    }
+
+    .footer-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    .footer-links {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 20px;
+        margin-bottom: 20px;
+    }
+
+    .footer-link {
+        color: #515154;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+    .footer-link:hover {
+        color: #1d1d1f;
+        text-decoration: underline;
+    }
+
+    .footer-copyright {
+        text-align: center;
+    }
+
+    /* Animation classes for scroll-triggered elements */
+    .animate-in {
+        opacity: 1 !important;
+        transform: translate(0) !important;
+    }
+
+    /* Keyframe animations */
+    @keyframes shine {
+        100% {
+            transform: translateX(100%);
+        }
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 1068px) {
+        .hero-title {
+            font-size: 64px;
+        }
+
+        .section-title, .feature-headline {
+            font-size: 48px;
+        }
+
+        .large-feature {
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        .feature-media, .large-feature.reverse .feature-media {
+            transform: translateY(50px) !important;
+        }
+
+        .feature-content, .large-feature.reverse .feature-content {
+            transform: translateY(50px) !important;
+        }
+    }
+
+    @media (max-width: 734px) {
+        .hero-title {
+            font-size: 48px;
+        }
+
+        .hero-subtitle, .section-subtitle, .feature-description {
+            font-size: 21px;
+        }
+
+        .section-title, .feature-headline {
+            font-size: 40px;
+        }
+
+        .feature-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .callout-title {
+            font-size: 48px;
+        }
+
+        .callout-text {
+            font-size: 21px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="hero-section" id="hero">
+    <div class="hero-slideshow">
+        <img src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1170" alt="Tourist place 1" class="active">
+        <img src="https://images.unsplash.com/photo-1433838552652-f9a46b332c40?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1170" alt="Tourist place 2">
+        <img src="https://images.unsplash.com/photo-1582788578095-a1c3fa3d92bd?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1170" alt="Tourist place 3">
+    </div>
+    <div class="hero-content">
+        <h1 class="hero-title">AI Trip Planner</h1>
+        <p class="hero-subtitle">The most powerful way to plan your perfect journey.</p>
+        <div class="hero-cta">
+            <a href="{% url 'router:trip_choice' %}" class="btn-glass">
+                Start Planning <span style="margin-left: 8px;">→</span>
+            </a>
+        </div>
+    </div>
+</section>
+
+<section class="feature-section light">
+    <div class="feature-container">
+        <h2 class="section-title">Why Choose AI Trip Planner</h2>
+        <p class="section-subtitle">We combine cutting-edge artificial intelligence with deep travel expertise to create personalized itineraries that adapt to you.</p>
+
+        <div class="feature-grid">
+            <div class="feature-card light">
+                <div class="feature-icon">🧠</div>
+                <h3 class="feature-title">Smart Itineraries</h3>
+                <p class="feature-text">Our AI analyzes millions of data points to craft the perfect schedule based on your preferences, budget, and travel style.</p>
+            </div>
+
+            <div class="feature-card light">
+                <div class="feature-icon">⚡</div>
+                <h3 class="feature-title">Real-Time Updates</h3>
+                <p class="feature-text">Dynamic adjustments for weather, events, and closures ensure your trip stays perfect from start to finish.</p>
+            </div>
+
+            <div class="feature-card light">
+                <div class="feature-icon">🌎</div>
+                <h3 class="feature-title">Global Coverage</h3>
+                <p class="feature-text">From iconic landmarks to hidden local gems, we've got every destination covered with insider knowledge.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="feature-section dark">
+    <div class="large-feature">
+        <div class="feature-media">
+            <img src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=2021" alt="AI Trip Planning Interface">
+        </div>
+        <div class="feature-content">
+            <h2 class="feature-headline">Intelligent Itinerary Generation</h2>
+            <p class="feature-description">Our proprietary algorithms consider thousands of factors to build your perfect schedule. Just tell us your interests, budget, and travel style, and we'll handle the rest.</p>
+            <a href="#" class="btn-glass">
+                Learn more <span style="margin-left: 8px;">→</span>
+            </a>
+        </div>
+    </div>
+</section>
+
+<section class="feature-section light">
+    <div class="large-feature reverse">
+        <div class="feature-media">
+            <img src="https://images.unsplash.com/photo-1506197603052-3cc9c3a201bd?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Travel Experiences">
+        </div>
+        <div class="feature-content">
+            <h2 class="feature-headline">Personalized Experiences</h2>
+            <p class="feature-description">Discover activities and dining options tailored to your unique tastes. Whether you're a foodie, adventurer, or culture seeker, we'll find what speaks to you.</p>
+            <a href="#" class="btn-glass" style="color: #000; border-color: #000;">
+                Learn more <span style="margin-left: 8px;">→</span>
+            </a>
+        </div>
+    </div>
+</section>
+
+<section class="callout-section">
+    <div class="callout-slideshow">
+        <img src="https://images.unsplash.com/photo-1606064217108-88a90985bb27?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1176" alt="Callout tourist place 1" class="active">
+        <img src="https://images.unsplash.com/photo-1592680105872-50fafe39a5e1?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1176" alt="Callout tourist place 2">
+        <img src="https://images.unsplash.com/photo-1699424494982-22852d1c81a3?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1170" alt="Callout tourist place 3">
+    </div>
+    <div class="callout-content">
+        <h2 class="callout-title">Start Your Journey Today</h2>
+        <p class="callout-text">Join millions of travelers who trust AI Trip Planner to create their perfect vacations.</p>
+        <a href="{% url 'router:trip_choice' %}" class="btn-glass">
+            Plan Your Trip <span style="margin-left: 8px;">→</span>
+        </a>
+    </div>
+</section>
+
+<footer class="footer">
+    <div class="footer-container">
+        <div class="footer-links">
+            <a href="#" class="footer-link">Privacy Policy</a>
+            <a href="#" class="footer-link">Terms of Use</a>
+            <a href="#" class="footer-link">Sales and Refunds</a>
+            <a href="#" class="footer-link">Legal</a>
+            <a href="#" class="footer-link">Site Map</a>
+        </div>
+        <div class="footer-copyright">
+            Copyright © 2023 AI Trip Planner Inc. All rights reserved.
+        </div>
+    </div>
+</footer>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // Hero section animation trigger
+    const heroSection = document.querySelector('.hero-section');
+    setTimeout(() => {
+        heroSection.classList.add('animate-in');
+    }, 300);
+
+    // Scroll animation for sections
+    const animateElements = [
+        ...document.querySelectorAll('.section-title, .section-subtitle'),
+        ...document.querySelectorAll('.feature-card'),
+        ...document.querySelectorAll('.feature-media, .feature-content'),
+        ...document.querySelectorAll('.callout-title, .callout-text')
+    ];
+
+    function checkScroll() {
+        animateElements.forEach(element => {
+            const elementTop = element.getBoundingClientRect().top;
+            const windowHeight = window.innerHeight;
+
+            if (elementTop < windowHeight * 0.75) {
+                element.classList.add('animate-in');
+            }
+        });
+    }
+
+    // Image slideshow functionality
+    function startSlideshow(containerClass) {
+        const slideshowContainer = document.querySelector(containerClass);
+        if (!slideshowContainer) return;
+
+        const images = slideshowContainer.querySelectorAll('img');
+        let currentImageIndex = 0;
+
+        function showNextImage() {
+            images[currentImageIndex].classList.remove('active');
+            currentImageIndex = (currentImageIndex + 1) % images.length;
+            images[currentImageIndex].classList.add('active');
+        }
+
+        setInterval(showNextImage, 5000); // Change image every 5 seconds
+    }
+
+    startSlideshow('.hero-slideshow');
+    startSlideshow('.callout-slideshow');
+
+    // Initial check
+    checkScroll();
+
+    // Check on scroll
+    window.addEventListener('scroll', checkScroll);
+
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+    });
+});
+</script>
+{% endblock %}

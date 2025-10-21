@@ -1,0 +1,91 @@
+/* static/css/custom_style.css */
+
+/* --- Google Font --- */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap');
+
+/* --- Root Variables for a Refined Color Palette --- */
+:root {
+    --primary-color: #5e72e4; /* A modern, friendly blue */
+    --secondary-color: #f5365c; /* A vibrant accent pink/red */
+    --dark-color: #212529;
+    --light-color: #f8f9fa;
+    --text-color: #525f7f;
+    --background-color: #f4f5f7;
+    --glass-bg: rgba(255, 255, 255, 0.15);
+    --glass-border: rgba(255, 255, 255, 0.2);
+}
+
+/* --- Global Body & Font Styling --- */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.7;
+    padding-top: 70px; /* IMPORTANT: Prevents content from hiding behind the fixed navbar */
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 700;
+    color: var(--dark-color);
+}
+
+/* --- Navbar Styling (FIX) --- */
+.navbar.fixed-top {
+    z-index: 1030; /* Ensures it's above all other content */
+    background: rgba(44, 62, 80, 0.5) !important; /* Semi-transparent dark glass effect */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* --- Page Header for consistent titles --- */
+.page-header {
+    text-align: center;
+    padding: 60px 20px;
+    background-color: rgba(0,0,0,0.02);
+    border-bottom: 1px solid #e9ecef;
+    margin-bottom: 40px;
+}
+
+.page-header h1 {
+    font-size: 3rem;
+    font-weight: 800;
+    color: var(--primary-color);
+}
+
+.page-header p {
+    font-size: 1.1rem;
+    max-width: 600px;
+    margin: 15px auto 0;
+}
+
+/* --- Background for inner pages --- */
+.page-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-image: url('../img/subpage_bg.svg');
+    background-size: cover;
+    background-position: center;
+    z-index: -2;
+    opacity: 0.1;
+}
+
+/* --- Glassmorphism Effect for containers --- */
+.glass-effect {
+    background: var(--glass-bg);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--glass-border);
+    padding: 2rem;
+}
+
+/* --- Homepage Hero Video Fix --- */
+/* Remove top padding for the hero section so it fits the full screen under the navbar */
+.video-hero-section {
+    margin-top: -70px; 
+}

@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Trip Itinerary - {{ destination }}</title>
+    <meta charset="UTF-8">
+    <style>
+        /* Modern PDF styling with improved typography and layout */
+        body {
+            font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+            margin: 15mm 20mm;
+            color: #2d3748;
+            line-height: 1.6;
+            font-size: 11pt;
+            background-color: #ffffff;
+        }
+        
+        /* Header styling */
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        h1 {
+            color: #2b6cb0;
+            margin-bottom: 10px;
+            font-size: 24pt;
+            font-weight: 700;
+        }
+        
+        .subtitle {
+            color: #4a5568;
+            font-size: 12pt;
+            margin-bottom: 5px;
+        }
+        
+        /* Trip details card */
+        .details-card {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .detail-item {
+            margin-bottom: 5px;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            color: #4a5568;
+            display: block;
+            margin-bottom: 2px;
+            font-size: 10pt;
+        }
+        
+        .detail-value {
+            color: #2d3748;
+            font-size: 11pt;
+        }
+        
+        /* Itinerary content styling */
+        .itinerary-section {
+            margin-top: 30px;
+        }
+        
+        h2 {
+            color: #2b6cb0;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-size: 18pt;
+            font-weight: 600;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 5px;
+        }
+        
+        h3 {
+            color: #3182ce;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 14pt;
+            font-weight: 600;
+        }
+        
+        h4 {
+            color: #4a5568;
+            margin-top: 15px;
+            margin-bottom: 8px;
+            font-size: 12pt;
+            font-weight: 600;
+        }
+        
+        /* Content elements */
+        p {
+            margin-bottom: 10px;
+        }
+        
+        ul, ol {
+            margin-bottom: 15px;
+            padding-left: 20px;
+        }
+        
+        li {
+            margin-bottom: 5px;
+        }
+        
+        strong {
+            font-weight: 600;
+            color: #2d3748;
+        }
+        
+        em {
+            font-style: italic;
+            color: #4a5568;
+        }
+        
+        /* Special elements */
+        .highlight-box {
+            background-color: #ebf8ff;
+            border-left: 4px solid #3182ce;
+            padding: 12px 15px;
+            margin: 15px 0;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .tip-box {
+            background-color: #f0fff4;
+            border-left: 4px solid #38a169;
+            padding: 12px 15px;
+            margin: 15px 0;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .warning-box {
+            background-color: #fff5f5;
+            border-left: 4px solid #e53e3e;
+            padding: 12px 15px;
+            margin: 15px 0;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        /* Day separator */
+        .day-separator {
+            border-top: 2px dashed #cbd5e0;
+            margin: 25px 0;
+        }
+        
+        /* Footer */
+        .footer {
+            margin-top: 50px;
+            text-align: center;
+            font-size: 9pt;
+            color: #718096;
+            padding-top: 15px;
+            border-top: 1px solid #e2e8f0;
+        }
+        
+        /* Responsive adjustments */
+        @media print {
+            body {
+                margin: 10mm 15mm;
+            }
+            
+            .page-break {
+                page-break-after: always;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Personalized Trip Itinerary</h1>
+        <div class="subtitle">Your Perfect Journey to {{ destination }}</div>
+    </div>
+
+    <div class="details-card">
+        <div class="details-grid">
+            <div class="detail-item">
+                <span class="detail-label">Destination</span>
+                <span class="detail-value">{{ destination }}</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Starting Point</span>
+                <span class="detail-value">{{ starting_point }}</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Duration</span>
+                <span class="detail-value">{{ trip_duration_days }} days</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Budget</span>
+                <span class="detail-value">₹{{ budget|floatformat:2 }}</span>
+            </div>
+            {% if interests %}
+            <div class="detail-item">
+                <span class="detail-label">Interests</span>
+                <span class="detail-value">{{ interests|join:", " }}</span>
+            </div>
+            {% endif %}
+            {% if travel_mode_preference %}
+            <div class="detail-item">
+                <span class="detail-label">Travel Modes</span>
+                <span class="detail-value">{{ travel_mode_preference|join:", " }}</span>
+            </div>
+            {% endif %}
+            {% if accommodation_preference %}
+            <div class="detail-item">
+                <span class="detail-label">Accommodation</span>
+                <span class="detail-value">{{ accommodation_preference|join:", " }}</span>
+            </div>
+            {% endif %}
+            {% if food_preference %}
+            <div class="detail-item">
+                <span class="detail-label">Food Preferences</span>
+                <span class="detail-value">{{ food_preference|join:", " }}</span>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="itinerary-section">
+        <h2>Your Detailed Travel Plan</h2>
+        {{ itinerary_content|safe }}
+    </div>
+
+    <div class="footer">
+        Generated by Personalized Trip Planner using AI • {{ current_date }}
+    </div>
+</body>
+</html>
